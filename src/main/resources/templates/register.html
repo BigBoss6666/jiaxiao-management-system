@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>驾校管理后台 · 注册</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="/css/main.css">
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-card-shell">
+        <!-- 顶部品牌 -->
+        <div class="brand auth-header">
+            <div class="brand-logo">
+                <div class="brand-logo-inner">DS</div>
+            </div>
+            <div>
+                <div class="auth-title">创建管理员账号</div>
+                <div class="auth-subtitle">用于登录驾校管理后台</div>
+            </div>
+        </div>
+
+        <!-- 注册卡片 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">注册</div>
+                    <div class="card-subtitle">填写基本信息，完成后台账号创建</div>
+                </div>
+            </div>
+
+            <!-- 注意：这里保持后端接口 /register -->
+            <form id="registerForm" th:action="@{/register}" method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">用户名</label>
+                        <input class="form-input" type="text" name="username"
+                               placeholder="例如：admin" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">手机号</label>
+                        <input class="form-input" type="text" name="phone"
+                               placeholder="用于联系（可选）">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input class="form-input" type="password" id="regPwd" name="password"
+                               placeholder="至少 6 位" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">确认密码</label>
+                        <input class="form-input" type="password" id="regPwd2"
+                               placeholder="再次输入密码" required>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <div class="hint">
+                        已有账号？
+                        <a class="link" th:href="@{/login}" href="/login">返回登录</a>
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <button type="reset" class="btn btn-outline">清空</button>
+                        <!-- 提交按钮 -->
+                        <button type="submit" class="btn btn-primary" id="registerSubmitBtn">
+                            提交注册
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+
+        </div>
+    </div>
+</div>
+
+<!-- 转场圆：覆盖全屏用 -->
+<div class="page-transition-circle" id="pageTransitionCircle"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+    <div class="toast-dot"></div>
+    <div id="toastText">提示</div>
+</div>
+
+<script>
+    function showToast(text) {
+        const toast = document.getElementById("toast");
+        const toastText = document.getElementById("toastText");
+        toastText.textContent = text;
+        toast.classList.add("visible");
+        setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // 计算从某个点放大，能完全盖住视口需要的 scale
+    function calcScaleToFill(x, y) {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const dx = Math.max(x, vw - x);
+        const dy = Math.max(y, vh - y);
+        const maxDist = Math.sqrt(dx * dx + dy * dy);
+        const radius = 30; // circle 初始半径 30px（宽高 60px）
+        return maxDist / radius + 0.5;
+    }
+
+    // 从元素位置放大一个圆，覆盖整个页面
+    function expandFromElement(el, onDone) {
+        const circle = document.getElementById("pageTransitionCircle");
+        if (!circle || !el) {
+            onDone && onDone();
+            return;
+        }
+
+        const rect = el.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const scale = calcScaleToFill(centerX, centerY);
+
+        circle.style.left = centerX + "px";
+        circle.style.top = centerY + "px";
+
+        // 重置初始状态
+        circle.style.transition = "none";
+        circle.style.transform = "translate(-50%, -50%) scale(0)";
+
+        // 用两次 requestAnimationFrame 确保浏览器应用了初始样式
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                circle.style.transition = "transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1)";
+                circle.style.transform = "translate(-50%, -50%) scale(" + scale + ")";
+            });
+        });
+
+        setTimeout(() => {
+            onDone && onDone();
+        }, 600);
+    }
+
+    // 注册表单提交：校验通过后，播放转场动画，然后真正提交给后端
+    document.getElementById("registerForm").addEventListener("submit", function (e) {
+        const p1 = document.getElementById("regPwd").value.trim();
+        const p2 = document.getElementById("regPwd2").value.trim();
+
+        // 前端简单校验
+        if (p1.length < 6) {
+            e.preventDefault();
+            showToast("密码长度至少 6 位");
+            return;
+        }
+        if (p1 !== p2) {
+            e.preventDefault();
+            showToast("两次输入的密码不一致");
+            return;
+        }
+
+        // 通过校验：先阻止默认提交，跑完动画再真正 submit
+        e.preventDefault();
+
+        const form = this;
+        const btn = document.getElementById("registerSubmitBtn");
+
+        expandFromElement(btn, function () {
+            // 这里开始才真正提交表单给后端 /register
+            // 后端成功后可以 redirect:/login
+            form.submit();
+        });
+    });
+</script>
+</body>
+</html>

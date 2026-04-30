@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>驾校管理后台 · 登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="/css/main.css">
+
+    <!-- 可以先放这里，后面你也可以移到 main.css 里 -->
+    <style>
+        .error-box {
+            margin: 8px 16px 0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: rgba(255, 71, 87, 0.08);
+            color: #ff4757;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-card-shell">
+        <!-- 顶部品牌 -->
+        <div class="brand auth-header">
+            <div class="brand-logo">
+                <div class="brand-logo-inner">DS</div>
+            </div>
+            <div>
+                <div class="auth-title">驾校管理后台</div>
+                <div class="auth-subtitle">使用管理员账号登录系统</div>
+            </div>
+        </div>
+
+        <!-- 登录卡片 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">登录</div>
+                    <div class="card-subtitle">请输入您的账号和密码</div>
+                </div>
+            </div>
+
+            <!-- 登录失败时的错误提示（来自后端 model.addAttribute("error", "...")） -->
+            <div th:if="${error}" class="error-box">
+                <span th:text="${error}">用户名或密码错误</span>
+            </div>
+
+            <!-- 这里保持 Spring Boot/Thymeleaf 的后端登录接口 -->
+            <form id="loginForm" th:action="@{/login}" method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">用户名</label>
+                        <input class="form-input"
+                               type="text"
+                               name="username"
+                               placeholder="例如：admin"
+                               required
+                               th:value="${param.username}" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input class="form-input"
+                               type="password"
+                               name="password"
+                               placeholder="输入密码"
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <div class="hint">
+                        没有账号？
+                        <a class="link" th:href="@{/register}" href="/register">马上注册</a>
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <button type="button" class="btn btn-outline"
+                                onclick="showToast('请联系系统管理员重置密码')">
+                            忘记密码
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="loginSubmitBtn">
+                            登录
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- 底部说明 -->
+        <div class="auth-footer">
+
+        </div>
+    </div>
+</div>
+
+<!-- 转场用的圆形（按钮放大效果） -->
+<div class="page-transition-circle" id="pageTransitionCircle"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+    <div class="toast-dot"></div>
+    <div id="toastText">提示</div>
+</div>
+
+<script>
+    function showToast(text) {
+        const toast = document.getElementById("toast");
+        const toastText = document.getElementById("toastText");
+        toastText.textContent = text;
+        toast.classList.add("visible");
+        setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // 按钮放大转场：从当前按钮位置放大一个圆形
+    // 注意：这里不再自己跳转 URL，而是动画结束后提交表单，让后端决定跳去哪
+    function runButtonTransition(buttonEl, onDone) {
+        const circle = document.getElementById("pageTransitionCircle");
+        if (!circle || !buttonEl) {
+            // 如果出问题，直接走回调（直接提交表单），不影响使用
+            if (onDone) onDone();
+            return;
+        }
+
+        const rect = buttonEl.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        circle.style.left = centerX + "px";
+        circle.style.top = centerY + "px";
+
+        // 开始动画
+        circle.classList.add("active");
+
+        // 动画结束后执行回调（提交表单）
+        setTimeout(function () {
+            if (onDone) onDone();
+        }, 550); // 和 CSS transition 时间对齐
+    }
+
+    // 真正的登录：表单提交给后端，由后端连数据库校验用户名/密码
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+        e.preventDefault(); // 先拦一下，跑动画，动画完再真正 submit
+
+        const form = this;
+        const btn = document.getElementById("loginSubmitBtn");
+
+        // 告诉 /students 页面：我是从登录页来的，要从“全屏圆”缩回去
+        sessionStorage.setItem("ds-transition-target", "students");
+
+        runButtonTransition(btn, function () {
+            // 动画跑完后，真正提交表单给后端
+            form.submit();
+        });
+    });
+</script>
+</body>
+</html>

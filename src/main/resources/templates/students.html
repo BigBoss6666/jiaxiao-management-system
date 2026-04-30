@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>驾校管理后台 · 学员管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="/css/main.css">
+</head>
+<body>
+<div class="app-shell">
+    <!-- 左侧导航 -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">
+                <div class="brand-logo-inner">DS</div>
+            </div>
+            <div>
+                <div class="brand-text-title">驾校管理后台</div>
+                <div class="brand-text-sub">Driving School Console</div>
+            </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section-title">学员功能</div>
+        <div class="nav-list" id="featureNav">
+            <a class="nav-item active" href="#" data-feature="info">
+                <span>
+                    <div class="nav-dot"></div>
+                    <span>学员信息管理</span>
+                </span>
+                <span class="nav-extra">Profile</span>
+            </a>
+            <a class="nav-item" href="#" data-feature="progress">
+                <span>
+                    <div class="nav-dot"></div>
+                    <span>学习进度管理</span>
+                </span>
+                <span class="nav-extra">Progress</span>
+            </a>
+            <a class="nav-item" href="#" data-feature="exam">
+                <span>
+                    <div class="nav-dot"></div>
+                    <span>考试成绩查询</span>
+                </span>
+                <span class="nav-extra">Exam</span>
+            </a>
+            <a class="nav-item" href="#" data-feature="subject">
+                <span>
+                    <div class="nav-dot"></div>
+                    <span>考试科目安排</span>
+                </span>
+                <span class="nav-extra">Subject</span>
+            </a>
+        </div>
+
+        <div class="sidebar-footer-card">
+            <div class="sidebar-footer-title">当前模块</div>
+            <div class="sidebar-footer-main" id="sidebarCurrent">
+                学员信息 · 学习进度 · 考试成绩
+            </div>
+            <div class="sidebar-footer-badges">
+                <div class="badge soft">信息</div>
+                <div class="badge soft">进度</div>
+                <div class="badge soft">成绩</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 右侧主内容 -->
+    <main class="main">
+
+        <!-- 1. 学员信息管理 -->
+        <section class="feature-page active" id="page-info">
+            <header class="main-header">
+                <div class="main-header-left">
+                    <div class="main-title">学员信息管理</div>
+                    <div class="main-subtitle">录入、查询与维护驾校学员的基本资料</div>
+                    <div class="chip-row">
+                        <div class="chip primary">
+                            <div class="chip-dot"></div>
+                            基本信息 · 联系方式 · 证件号
+                        </div>
+                    </div>
+                </div>
+                <div class="main-header-right">
+                    <button class="pill-btn" id="btnLogout">
+                        <span class="icon">⎋</span>
+                        <span>退出登录</span>
+                    </button>
+                </div>
+            </header>
+
+            <section>
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">学员列表</div>
+                            <div class="card-subtitle">左侧选择学员，右侧查看与编辑基本信息</div>
+                        </div>
+                        <div class="card-header-right">
+                            <button class="btn btn-primary" id="btnAddStudent">新增学员</button>
+                        </div>
+                    </div>
+
+                    <div class="student-layout">
+                        <!-- 左侧：学员列表 -->
+                        <div>
+                            <div class="table-wrapper">
+                                <div class="table-toolbar">
+                                    <div class="search-input-wrap">
+                                        <span class="search-icon">🔍</span>
+                                        <input id="searchInputInfo" class="search-input"
+                                               placeholder="按姓名 / 电话 / 身份证搜索学员…">
+                                    </div>
+                                </div>
+
+                                <div class="table-scroll">
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th>姓名</th>
+                                            <th>班型</th>
+                                            <th>手机号</th>
+                                            <th>状态</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="studentsTableInfo"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 右侧：学员基本信息详情 -->
+                        <div>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-label">姓名</div>
+                                    <div class="stat-value" id="infoName">未选择</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">班型</div>
+                                    <div class="stat-value" id="infoClass">-</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">手机号</div>
+                                    <div class="stat-value" id="infoPhone">-</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">身份证号</div>
+                                    <div class="stat-value" id="infoIdCard">-</div>
+                                </div>
+                            </div>
+
+                            <div class="hint">
+                            </div>
+                            <div style="margin-top:8px;display:flex;gap:8px;">
+                                <button class="btn btn-primary" id="btnEditInfo">编辑信息</button>
+                                <button class="btn btn-outline" id="btnDeleteStudent">删除学员</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </section>
+
+        <!-- 2. 学习进度管理 -->
+        <section class="feature-page" id="page-progress">
+            <header class="main-header">
+                <div class="main-header-left">
+                    <div class="main-title">学习进度管理</div>
+                    <div class="main-subtitle">按科目与课时维度跟踪学员学习进度</div>
+                    <div class="chip-row">
+                        <div class="chip primary">
+                            <div class="chip-dot"></div>
+                            科目进度 · 课时统计
+                        </div>
+                    </div>
+                </div>
+                <div class="main-header-right">
+                    <button class="pill-btn" id="btnLogout2">
+                        <span class="icon">⎋</span>
+                        <span>退出登录</span>
+                    </button>
+                </div>
+            </header>
+
+            <section>
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">学员列表</div>
+                            <div class="card-subtitle">选择学员后下方展示详细进度信息</div>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-input-wrap">
+                                <span class="search-icon">🔍</span>
+                                <input id="searchInputProgress" class="search-input"
+                                       placeholder="按姓名 / 电话搜索学员…">
+                            </div>
+                        </div>
+
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>姓名</th>
+                                    <th>班型</th>
+                                    <th>当前科目</th>
+                                    <th>累计课时</th>
+                                    <th>训练状态</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody id="studentsTableProgress"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:16px;">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">当前学员</div>
+                                <div class="stat-value" id="progName">未选择</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">当前科目</div>
+                                <div class="stat-value" id="progSubject">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">累计课时</div>
+                                <div class="stat-value" id="progHours">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">训练状态</div>
+                                <div class="stat-value">
+                                    <span class="status-dot pending"></span>
+                                    <span id="progStatus">未选择学员</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hint">
+                            此区域对应「学习进度管理」功能，可模拟切换科目、增加课时等操作。
+                        </div>
+                        <div style="margin-top:8px;display:flex;gap:8px;">
+                            <button class="btn btn-primary" id="btnNextSubject">切换到下一个科目</button>
+                            <button class="btn btn-outline" id="btnAddHours">+ 10 课时</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- 3. 考试成绩查询 -->
+        <section class="feature-page" id="page-exam">
+            <header class="main-header">
+                <div class="main-header-left">
+                    <div class="main-title">考试成绩查询</div>
+                    <div class="main-subtitle">按学员维度查看各科考试成绩与通过情况</div>
+                    <div class="chip-row">
+                        <div class="chip primary">
+                            <div class="chip-dot"></div>
+                            科目一 ~ 科目四 · 成绩统计
+                        </div>
+                    </div>
+                </div>
+                <div class="main-header-right">
+                    <button class="pill-btn" id="btnLogout3">
+                        <span class="icon">⎋</span>
+                        <span>退出登录</span>
+                    </button>
+                </div>
+            </header>
+
+            <section>
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">学员列表</div>
+                            <div class="card-subtitle">选择学员后，下方展示其考试记录</div>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-input-wrap">
+                                <span class="search-icon">🔍</span>
+                                <input id="searchInputExam" class="search-input"
+                                       placeholder="按姓名 / 电话搜索学员…">
+                            </div>
+                        </div>
+
+                        <div class="table-scroll">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>姓名</th>
+                                    <th>班型</th>
+                                    <th>最近考试科目</th>
+                                    <th>最近成绩</th>
+                                    <th>通过情况</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody id="studentsTableExam"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:16px;">
+                        <div class="stat-card" style="margin-bottom:8px;">
+                            <div class="stat-label" id="examStudentTitle">尚未选择学员</div>
+                            <div class="stat-value" id="examSummary">请选择上方学员查看考试情况</div>
+                        </div>
+
+                        <div class="exam-list" id="examList"></div>
+
+                        <div class="hint" style="margin-top:6px;">
+                            此区域对应「考试成绩查询」功能，可展示每次考试科目、分数与是否通过。
+                        </div>
+
+                        <div style="margin-top:8px;display:flex;gap:8px;">
+                            <button class="btn btn-primary" id="btnAddExam">新增考试记录</button>
+                            <button class="btn btn-outline" id="btnClearExam">清空考试记录</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- 4. 考试科目安排 -->
+        <section class="feature-page" id="page-subject">
+            <header class="main-header">
+                <div class="main-header-left">
+                    <div class="main-title">考试科目安排</div>
+                    <div class="main-subtitle">按科目与日期查看学员的考试预约情况</div>
+                    <div class="chip-row">
+                        <div class="chip primary">
+                            <div class="chip-dot"></div>
+                            科目一 ~ 科目四 · 考试排期
+                        </div>
+                    </div>
+                </div>
+                <div class="main-header-right">
+                    <button class="pill-btn" id="btnLogout4">
+                        <span class="icon">⎋</span>
+                        <span>退出登录</span>
+                    </button>
+                </div>
+            </header>
+
+            <section>
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">考试科目安排</div>
+                            <div class="card-subtitle">支持按场次、报名学员、统计多维度查看</div>
+                        </div>
+                    </div>
+
+                    <!-- 二级 Tab -->
+                    <div class="tab-row" id="subjectTabs" style="display:flex;gap:8px;margin-bottom:12px;">
+                        <button class="btn btn-outline" data-subject-tab="list">场次列表</button>
+                        <button class="btn btn-outline" data-subject-tab="detail">场次详情</button>
+                        <button class="btn btn-outline" data-subject-tab="assign">学员安排</button>
+                        <button class="btn btn-outline" data-subject-tab="stat">统计视图</button>
+                    </div>
+
+                    <!-- 子页面 1：场次列表 -->
+                    <div class="subject-view" id="subjectView-list">
+                        <div class="table-wrapper">
+                            <div class="table-scroll">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>考试科目</th>
+                                        <th>考试日期</th>
+                                        <th>场次</th>
+                                        <th>报名人数</th>
+                                        <th>状态</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="subjectTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="hint" style="margin-top:8px;">
+                            点击某一行可在「场次详情」标签页中查看详细信息。
+                        </div>
+                        <div style="margin-top:8px;display:flex;gap:8px;">
+                            <button class="btn btn-primary" id="btnAddSlot">新增考试场次</button>
+                        </div>
+                    </div>
+
+                    <!-- 子页面 2：场次详情 -->
+                    <div class="subject-view" id="subjectView-detail" style="display:none;">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">科目</div>
+                                <div class="stat-value" id="slotDetailSubject">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">考试日期</div>
+                                <div class="stat-value" id="slotDetailDate">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">场次</div>
+                                <div class="stat-value" id="slotDetailSession">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">报名人数</div>
+                                <div class="stat-value" id="slotDetailCount">-</div>
+                            </div>
+                        </div>
+
+                        <div class="hint" style="margin-top:8px;">
+                            这里展示的是当前选中场次的详情信息，可在文档中作为「考试场次详情视图」说明。
+                        </div>
+                    </div>
+
+                    <!-- 子页面 3：学员安排 -->
+                    <div class="subject-view" id="subjectView-assign" style="display:none;">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">当前场次</div>
+                                <div class="stat-value" id="assignSlotTitle">未选择</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">已选学员数</div>
+                                <div class="stat-value" id="assignStudentCount">0</div>
+                            </div>
+                        </div>
+
+                        <div class="hint" style="margin-top:8px;">
+                            该区域示意「为考试场次安排学员」的功能，可说明与 student / exam_slot_student 表关联。
+                        </div>
+
+                        <div style="margin-top:8px;display:flex;gap:8px;">
+                            <button class="btn btn-primary" id="btnOpenAssignModal">为场次选择学员</button>
+                        </div>
+
+                        <div class="table-wrapper" style="margin-top:12px;">
+                            <div class="table-scroll">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>学员姓名</th>
+                                        <th>班型</th>
+                                        <th>手机号</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="assignStudentTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 子页面 4：统计视图 -->
+                    <div class="subject-view" id="subjectView-stat" style="display:none;">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">总考试场次</div>
+                                <div class="stat-value" id="statTotalSlots">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">总报名人数</div>
+                                <div class="stat-value" id="statTotalCount">0</div>
+                            </div>
+                        </div>
+
+                        <div class="hint" style="margin-top:8px;">
+                            该视图从 exam_slot 表汇总统计数据，在课程设计中可以归类为「统计报表视图」。
+                        </div>
+
+                        <div class="table-wrapper" style="margin-top:12px;">
+                            <div class="table-scroll">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>考试科目</th>
+                                        <th>场次数量</th>
+                                        <th>累计报名人数</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="statBySubjectBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </section>
+
+    </main>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-dot"></div>
+        <div id="toastText">提示</div>
+    </div>
+</div>
+
+<!-- 登录转场圆 -->
+<div class="page-transition-circle" id="pageTransitionCircle"></div>
+
+<!-- 学员新增 / 编辑弹窗 -->
+<div class="modal-backdrop" id="studentModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <span id="studentModalTitle">新增学员</span>
+            <button class="modal-close" type="button" data-close="studentModal">×</button>
+        </div>
+        <div class="modal-body">
+            <div>
+                <div class="modal-label">姓名</div>
+                <input id="modalStudentName" class="modal-input" placeholder="请输入姓名">
+            </div>
+            <div>
+                <div class="modal-label">班型</div>
+                <input id="modalStudentClass" class="modal-input" placeholder="如：C1 普通班">
+            </div>
+            <div>
+                <div class="modal-label">手机号</div>
+                <input id="modalStudentPhone" class="modal-input" placeholder="11 位手机号">
+            </div>
+            <div>
+                <div class="modal-label">身份证号</div>
+                <input id="modalStudentIdCard" class="modal-input" placeholder="身份证号码">
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" type="button" data-close="studentModal">取消</button>
+            <button class="btn btn-primary" type="button" id="studentModalConfirm">确定</button>
+        </div>
+    </div>
+</div>
+
+<!-- 新增考试记录弹窗 -->
+<div class="modal-backdrop" id="examModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <span>新增考试记录</span>
+            <button class="modal-close" type="button" data-close="examModal">×</button>
+        </div>
+        <div class="modal-body">
+            <div>
+                <div class="modal-label">考试科目</div>
+                <input id="modalExamSubject" class="modal-input" placeholder="如：科目一">
+            </div>
+            <div>
+                <div class="modal-label">成绩</div>
+                <input id="modalExamScore" class="modal-input" placeholder="0 - 100">
+            </div>
+            <div>
+                <div class="modal-label">考试日期</div>
+                <input id="modalExamDate" class="modal-input" placeholder="YYYY-MM-DD">
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" type="button" data-close="examModal">取消</button>
+            <button class="btn btn-primary" type="button" id="examModalConfirm">确定</button>
+        </div>
+    </div>
+</div>
+
+<!-- 新增考试场次弹窗 -->
+<div class="modal-backdrop" id="examSlotModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <span>新增考试场次</span>
+            <button class="modal-close" type="button" data-close="examSlotModal">×</button>
+        </div>
+        <div class="modal-body">
+            <div>
+                <div class="modal-label">考试科目</div>
+                <input id="modalSlotSubject" class="modal-input" placeholder="如：科目一">
+            </div>
+            <div>
+                <div class="modal-label">考试日期</div>
+                <input id="modalSlotDate" class="modal-input" placeholder="YYYY-MM-DD">
+            </div>
+            <div>
+                <div class="modal-label">场次</div>
+                <input id="modalSlotSession" class="modal-input" placeholder="如：上午场">
+            </div>
+            <div>
+                <div class="modal-label">最大报名人数</div>
+                <input id="modalSlotCapacity" class="modal-input" placeholder="如：30">
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" type="button" data-close="examSlotModal">取消</button>
+            <button class="btn btn-primary" type="button" id="examSlotModalConfirm">确定</button>
+        </div>
+    </div>
+</div>
+
+<!-- 为考试场次安排学员弹窗 -->
+<div class="modal-backdrop" id="assignModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <span>安排考试学员</span>
+            <button class="modal-close" type="button" data-close="assignModal">×</button>
+        </div>
+        <div class="modal-body">
+            <div>
+                <div class="modal-label">选择学员</div>
+                <select id="assignStudentSelect" class="modal-input">
+                    <!-- JS 填充 -->
+                </select>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-outline" type="button" data-close="assignModal">取消</button>
+            <button class="btn btn-primary" type="button" id="assignModalConfirm">确定</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const $ = s => document.querySelector(s);
+
+    // Toast
+    function showToast(text) {
+        const toast = $("#toast");
+        $("#toastText").textContent = text;
+        toast.classList.add("visible");
+        setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // 全局数据
+    let students = [];
+    let slots = [];
+    let selectedId = null;      // 当前选中的学员 ID
+    let selectedSlotId = null;  // 当前选中的考试场次 ID
+    let assignStudentsForSlot = {}; // { slotId: [studentId, ...] }
+
+    function getById(id) {
+        return students.find(s => s.id === id);
+    }
+
+    // 左侧导航切换
+    (function () {
+        const pageMap = {
+            info: "page-info",
+            progress: "page-progress",
+            exam: "page-exam",
+            subject: "page-subject"
+        };
+
+        document.querySelectorAll("#featureNav .nav-item").forEach(item => {
+            item.addEventListener("click", function (e) {
+                e.preventDefault();
+                const feature = this.dataset.feature;
+
+                document.querySelectorAll("#featureNav .nav-item")
+                    .forEach(it => it.classList.remove("active"));
+                this.classList.add("active");
+
+                document.querySelectorAll(".feature-page")
+                    .forEach(p => p.classList.remove("active"));
+                const pageId = pageMap[feature];
+                if (pageId) {
+                    document.getElementById(pageId).classList.add("active");
+                }
+
+                const sidebarCurrent = document.getElementById("sidebarCurrent");
+                if (feature === "info") sidebarCurrent.textContent = "学员基本信息维护";
+                if (feature === "progress") sidebarCurrent.textContent = "学员学习进度管理";
+                if (feature === "exam") sidebarCurrent.textContent = "考试记录与成绩统计";
+                if (feature === "subject") sidebarCurrent.textContent = "考试科目预约与排期";
+            });
+        });
+    })();
+
+    // 转场动画
+    function calcScaleToFill(x, y) {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const dx = Math.max(x, vw - x);
+        const dy = Math.max(y, vh - y);
+        const maxDist = Math.sqrt(dx * dx + dy * dy);
+        const radius = 30;
+        return maxDist / radius + 0.5;
+    }
+
+    function shrinkToElement(el) {
+        const circle = document.getElementById("pageTransitionCircle");
+        if (!circle || !el) return;
+
+        const rect = el.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const scale = calcScaleToFill(centerX, centerY);
+
+        circle.style.left = centerX + "px";
+        circle.style.top = centerY + "px";
+        circle.style.transition = "none";
+        circle.style.transform = "translate(-50%, -50%) scale(" + scale + ")";
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                circle.style.transition = "transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1)";
+                circle.style.transform = "translate(-50%, -50%) scale(0)";
+            });
+        });
+    }
+
+    // 1. 学员信息管理
+    function renderStudentsTableInfo(filter = "") {
+        const tbody = $("#studentsTableInfo");
+        tbody.innerHTML = "";
+        const key = filter.trim().toLowerCase();
+
+        students
+            .filter(s => !key ||
+                (s.name && s.name.toLowerCase().includes(key)) ||
+                (s.phone && s.phone.toLowerCase().includes(key)) ||
+                (s.idCard && s.idCard.toLowerCase().includes(key)))
+            .forEach(s => {
+                const tr = document.createElement("tr");
+                const status = s.status || "在读";
+                tr.innerHTML = `
+                    <td>${s.name || ""}</td>
+                    <td>${s.classType || ""}</td>
+                    <td>${s.phone || ""}</td>
+                    <td>
+                        <span class="tag">
+                            <span class="tag-pill ${status === "在读" ? "green" : "yellow"}"></span>
+                            ${status}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn-xs primary" data-id="${s.id}" data-action="view">查看</button>
+                            <button class="btn-xs" data-id="${s.id}" data-action="edit">编辑</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+    }
+
+    function renderInfoDetail(id) {
+        const s = getById(id);
+        if (!s) return;
+        $("#infoName").textContent = s.name || "未选择";
+        $("#infoClass").textContent = s.classType || "-";
+        $("#infoPhone").textContent = s.phone || "-";
+        $("#infoIdCard").textContent = s.idCard || "-";
+    }
+
+    $("#studentsTableInfo").addEventListener("click", e => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+        const id = parseInt(btn.dataset.id);
+        const action = btn.dataset.action;
+        const stu = getById(id);
+        if (!stu) return;
+
+        selectedId = id;
+        renderInfoDetail(selectedId);
+        renderProgressDetail(selectedId);
+        renderExamForStudent(stu);
+
+        if (action === "view") {
+            showToast("已切换至学员「" + (stu.name || "") + "」");
+        } else if (action === "edit") {
+            openStudentModal("edit", stu);
+        }
+    });
+
+    $("#searchInputInfo").addEventListener("input", function () {
+        renderStudentsTableInfo(this.value);
+    });
+
+    // 学员新增 / 编辑弹窗逻辑
+    const studentModal = $("#studentModal");
+    const studentModalTitle = $("#studentModalTitle");
+    const modalStudentName = $("#modalStudentName");
+    const modalStudentClass = $("#modalStudentClass");
+    const modalStudentPhone = $("#modalStudentPhone");
+    const modalStudentIdCard = $("#modalStudentIdCard");
+    const studentModalConfirm = $("#studentModalConfirm");
+
+    let studentModalMode = "add";
+    let editingStudentId = null;
+
+    function openStudentModal(mode, stu) {
+        studentModalMode = mode;
+        editingStudentId = stu ? stu.id : null;
+
+        if (mode === "add") {
+            studentModalTitle.textContent = "新增学员";
+            modalStudentName.value = "";
+            modalStudentClass.value = "C1 普通班";
+            modalStudentPhone.value = "";
+            modalStudentIdCard.value = "";
+        } else {
+            studentModalTitle.textContent = "编辑学员信息";
+            modalStudentName.value = stu.name || "";
+            modalStudentClass.value = stu.classType || "";
+            modalStudentPhone.value = stu.phone || "";
+            modalStudentIdCard.value = stu.idCard || "";
+        }
+
+        studentModal.classList.add("visible");
+        modalStudentName.focus();
+    }
+
+    function closeStudentModal() {
+        studentModal.classList.remove("visible");
+    }
+
+    document.querySelectorAll("[data-close='studentModal']").forEach(btn => {
+        btn.addEventListener("click", closeStudentModal);
+    });
+
+    $("#btnAddStudent").addEventListener("click", () => openStudentModal("add", null));
+
+    // 这里是真正调用后端新增 / 修改学生
+    studentModalConfirm.addEventListener("click", () => {
+        const name = modalStudentName.value.trim();
+        const clazz = modalStudentClass.value.trim() || "C1 普通班";
+        const phone = modalStudentPhone.value.trim();
+        const idCardInput = modalStudentIdCard.value.trim();
+        const idCard = idCardInput || "未填写";
+
+        // 1. 基本必填校验
+        if (!name || !phone) {
+            showToast("姓名和手机号不能为空");
+            return;
+        }
+
+        // 2. 手机号校验（国内 11 位手机号）
+        const phonePattern = /^1[3-9]\d{9}$/;
+        if (!phonePattern.test(phone)) {
+            showToast("手机号格式不正确，请输入 11 位有效手机号");
+            return;
+        }
+
+        // 3. 身份证校验（15 位或 18 位，18 位最后一位可为 X/x）
+        if (idCardInput) {  // 用户有填才校验
+            const idCardPattern = /(^\d{15}$)|(^\d{17}[\dXx]$)/;
+            if (!idCardPattern.test(idCardInput)) {
+                showToast("身份证号码格式不正确");
+                return;
+            }
+        }
+
+        const payload = {
+            name: name,
+            classType: clazz,
+            phone: phone,
+            idCard: idCard
+        };
+
+        // 新增
+        if (studentModalMode === "add") {
+            fetch('/api/students', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("新增失败");
+                    return res.json();
+                })
+                .then(newStu => {
+                    students.push(newStu);
+                    selectedId = newStu.id;
+                    renderAllTables();
+                    renderInfoDetail(selectedId);
+                    renderProgressDetail(selectedId);
+                    renderExamForStudent(newStu);
+                    showToast("已新增学员");
+                    closeStudentModal();
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast("新增学员失败，请检查后端 /api/students");
+                });
+
+            // 编辑
+        } else if (studentModalMode === "edit" && editingStudentId != null) {
+            fetch('/api/students/' + editingStudentId, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("更新失败");
+                    return res.json();
+                })
+                .then(updated => {
+                    const index = students.findIndex(s => s.id === editingStudentId);
+                    if (index !== -1) {
+                        students[index] = updated;
+                    }
+                    selectedId = updated.id;
+                    renderAllTables();
+                    renderInfoDetail(selectedId);
+                    renderProgressDetail(selectedId);
+                    renderExamForStudent(updated);
+                    showToast("已更新学员信息");
+                    closeStudentModal();
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast("更新学员失败，请检查后端");
+                });
+        }
+    });
+
+
+    $("#btnEditInfo").addEventListener("click", () => {
+        if (!selectedId) return showToast("请先选择学员");
+        const stu = getById(selectedId);
+        if (!stu) return;
+        openStudentModal("edit", stu);
+    });
+
+    $("#btnDeleteStudent").addEventListener("click", () => {
+        if (!selectedId) return showToast("请先选择学员");
+        const stu = getById(selectedId);
+        if (!stu) return;
+
+        if (!confirm("确认删除学员「" + (stu.name || "") + "」？")) return;
+
+        fetch('/api/students/' + stu.id, {
+            method: 'DELETE'
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("删除失败");
+                students = students.filter(s => s.id !== stu.id);
+                selectedId = students[0] ? students[0].id : null;
+                renderAllTables();
+
+                if (selectedId) {
+                    renderInfoDetail(selectedId);
+                    renderProgressDetail(selectedId);
+                    renderExamForStudent(getById(selectedId));
+                } else {
+                    $("#infoName").textContent = "未选择";
+                    $("#infoClass").textContent = "-";
+                    $("#infoPhone").textContent = "-";
+                    $("#infoIdCard").textContent = "-";
+                    $("#progName").textContent = "未选择";
+                    $("#progSubject").textContent = "-";
+                    $("#progHours").textContent = "-";
+                    $("#progStatus").textContent = "未选择学员";
+                    $("#examStudentTitle").textContent = "尚未选择学员";
+                    $("#examSummary").textContent = "请选择上方学员查看考试情况";
+                    $("#examList").innerHTML = "";
+                }
+                showToast("已删除学员");
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("删除学员失败，请检查后端");
+            });
+    });
+
+    // 2. 学习进度管理
+    function renderStudentsTableProgress(filter = "") {
+        const tbody = $("#studentsTableProgress");
+        tbody.innerHTML = "";
+        const key = filter.trim().toLowerCase();
+
+        students
+            .filter(s => !key || (s.name && s.name.toLowerCase().includes(key)))
+            .forEach(s => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${s.name || ""}</td>
+                    <td>${s.classType || ""}</td>
+                    <td>${s.currentSubject || "科目一"}</td>
+                    <td>${(s.hours || 0)} 课时</td>
+                    <td>${s.status || "在读"}</td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn-xs primary" data-id="${s.id}">查看进度</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+    }
+
+    function renderProgressDetail(id) {
+        const s = getById(id);
+        if (!s) return;
+        $("#progName").textContent = s.name || "未选择";
+        $("#progSubject").textContent = s.currentSubject || "-";
+        $("#progHours").textContent = (s.hours || 0) + " 课时";
+        $("#progStatus").textContent = s.status || "在读";
+    }
+
+    $("#studentsTableProgress").addEventListener("click", e => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+        selectedId = parseInt(btn.dataset.id);
+        const stu = getById(selectedId);
+        if (!stu) return;
+        renderProgressDetail(selectedId);
+        renderInfoDetail(selectedId);
+        renderExamForStudent(stu);
+        showToast("已切换至学员「" + (stu.name || "") + "」");
+    });
+
+    $("#searchInputProgress").addEventListener("input", function () {
+        renderStudentsTableProgress(this.value);
+    });
+
+    $("#btnNextSubject").addEventListener("click", () => {
+        if (!selectedId) return showToast("请先选择学员");
+        const stu = getById(selectedId);
+        if (!stu) return;
+
+        fetch('/api/students/' + selectedId + '/next-subject', {
+            method: 'POST'
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("切换科目失败");
+                return res.json();
+            })
+            .then(updated => {
+                const index = students.findIndex(s => s.id === updated.id);
+                if (index !== -1) students[index] = updated;
+
+                renderStudentsTableProgress($("#searchInputProgress").value);
+                renderProgressDetail(selectedId);
+                renderStudentsTableInfo($("#searchInputInfo").value);
+                showToast("已切换至「" + (updated.currentSubject || "") + "」");
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("切换科目失败，请检查后端");
+            });
+    });
+
+    $("#btnAddHours").addEventListener("click", () => {
+        if (!selectedId) return showToast("请先选择学员");
+
+        fetch('/api/students/' + selectedId + '/add-hours?hours=10', {
+            method: 'POST'
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("增加课时失败");
+                return res.json();
+            })
+            .then(updated => {
+                const index = students.findIndex(s => s.id === updated.id);
+                if (index !== -1) students[index] = updated;
+
+                renderProgressDetail(selectedId);
+                renderStudentsTableProgress($("#searchInputProgress").value);
+                showToast("已增加 10 课时");
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("增加课时失败，请检查后端");
+            });
+    });
+
+    // 3. 考试成绩
+    function renderStudentsTableExam(filter = "") {
+        const tbody = $("#studentsTableExam");
+        tbody.innerHTML = "";
+        const key = filter.trim().toLowerCase();
+
+        students
+            .filter(s => !key || (s.name && s.name.toLowerCase().includes(key)))
+            .forEach(s => {
+                const latest = (s.exams && s.exams.length > 0) ? s.exams[s.exams.length - 1] : null;
+                const latestSubject = latest ? latest.subject : "-";
+                const latestScore = latest ? (latest.score + " 分") : "-";
+
+                let passFlag = "-";
+                if (latest) {
+                    const flag = (latest.isPass !== undefined && latest.isPass !== null)
+                        ? latest.isPass
+                        : (latest.pass !== undefined && latest.pass !== null
+                            ? latest.pass
+                            : false);
+                    passFlag = flag ? "通过" : "未通过";
+                }
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${s.name || ""}</td>
+                    <td>${s.classType || ""}</td>
+                    <td>${latestSubject}</td>
+                    <td>${latestScore}</td>
+                    <td>${passFlag}</td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn-xs primary" data-id="${s.id}">查看成绩</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+    }
+
+    function renderExamForStudent(student) {
+        const list = $("#examList");
+        const summary = $("#examSummary");
+        const title = $("#examStudentTitle");
+
+        if (!student) {
+            title.textContent = "尚未选择学员";
+            summary.textContent = "请选择上方学员查看考试情况";
+            list.innerHTML = "";
+            return;
+        }
+
+        title.textContent = "学员「" + (student.name || "") + "」的考试记录";
+
+        list.innerHTML = "";
+        if (!student.exams || student.exams.length === 0) {
+            list.innerHTML = `<div style="padding:10px;font-size:12px;color:#6e6e73;">暂无考试记录</div>`;
+            summary.textContent = "暂无考试记录";
+            return;
+        }
+
+        let passCount = 0;
+        student.exams.forEach(e => {
+            const flag = (e.isPass !== undefined && e.isPass !== null)
+                ? e.isPass
+                : (e.pass !== undefined && e.pass !== null ? e.pass : false);
+
+            const displayDate = e.examDate || e.date || "-";
+
+            if (flag) passCount++;
+
+            const row = document.createElement("div");
+            row.className = "exam-row";
+            row.innerHTML = `
+                <div>${e.subject}</div>
+                <div>${displayDate}</div>
+                <div>${e.score} 分</div>
+                <div>
+                    <span class="${flag ? "pill-pass" : "pill-fail"}">
+                        ${flag ? "通过" : "未通过"} · 第 ${e.times} 次
+                    </span>
+                </div>
+            `;
+            list.appendChild(row);
+        });
+
+        summary.textContent = `共 ${student.exams.length} 次考试，其中 ${passCount} 次通过`;
+    }
+
+    $("#studentsTableExam").addEventListener("click", e => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+        selectedId = parseInt(btn.dataset.id);
+        const stu = getById(selectedId);
+        if (!stu) return;
+        renderExamForStudent(stu);
+        renderInfoDetail(selectedId);
+        renderProgressDetail(selectedId);
+        showToast("已切换至学员「" + (stu.name || "") + "」");
+    });
+
+    $("#searchInputExam").addEventListener("input", function () {
+        renderStudentsTableExam(this.value);
+    });
+
+    // 考试记录弹窗
+    const examModal = $("#examModal");
+    const modalExamSubject = $("#modalExamSubject");
+    const modalExamScore = $("#modalExamScore");
+    const modalExamDate = $("#modalExamDate");
+    const examModalConfirm = $("#examModalConfirm");
+
+    function openExamModal() {
+        const today = new Date().toISOString().slice(0, 10);
+        modalExamSubject.value = "科目一";
+        modalExamScore.value = "90";
+        modalExamDate.value = today;
+        examModal.classList.add("visible");
+        modalExamSubject.focus();
+    }
+
+    function closeExamModal() {
+        examModal.classList.remove("visible");
+    }
+
+    document.querySelectorAll("[data-close='examModal']").forEach(btn => {
+        btn.addEventListener("click", closeExamModal);
+    });
+
+    $("#btnAddExam").addEventListener("click", () => {
+        if (!selectedId) return showToast("请先选择学员");
+        openExamModal();
+    });
+
+    examModalConfirm.addEventListener("click", () => {
+        if (!selectedId) return showToast("请先选择学员");
+        const stu = getById(selectedId);
+        if (!stu) return;
+
+        const subject = modalExamSubject.value.trim() || "科目一";
+        const score = parseInt(modalExamScore.value.trim() || "0");
+        const date = modalExamDate.value.trim() || new Date().toISOString().slice(0, 10);
+
+        const url = `/api/students/${selectedId}/exams?subject=${encodeURIComponent(subject)}&score=${score}&date=${encodeURIComponent(date)}`;
+
+        fetch(url, {method: 'POST'})
+            .then(res => {
+                if (!res.ok) throw new Error("新增考试记录失败");
+                return res.json();
+            })
+            .then(updated => {
+                const index = students.findIndex(s => s.id === updated.id);
+                if (index !== -1) students[index] = updated;
+
+                renderExamForStudent(updated);
+                renderStudentsTableExam($("#searchInputExam").value);
+                showToast("已新增考试记录");
+                closeExamModal();
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("新增考试记录失败，请检查后端");
+            });
+    });
+
+    $("#btnClearExam").addEventListener("click", () => {
+        if (!selectedId) return showToast("请先选择学员");
+        const stu = getById(selectedId);
+        if (!stu) return;
+
+        if (!confirm("确认清空学员「" + (stu.name || "") + "」的考试记录？")) return;
+
+        fetch(`/api/students/${selectedId}/exams`, {
+            method: 'DELETE'
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("清空考试记录失败");
+                return res.json();
+            })
+            .then(updated => {
+                const index = students.findIndex(s => s.id === updated.id);
+                if (index !== -1) students[index] = updated;
+
+                renderExamForStudent(updated);
+                renderStudentsTableExam($("#searchInputExam").value);
+                showToast("已清空考试记录");
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("清空考试记录失败，请检查后端");
+            });
+    });
+
+    // 4. 考试科目安排：列表 + 详情 + 学员安排 + 统计
+
+    function renderSlotsTable() {
+        const tbody = $("#subjectTableBody");
+        tbody.innerHTML = "";
+        slots.forEach(slot => {
+            const booked = (slot.bookedCount != null) ? slot.bookedCount :
+                (slot.registeredCount != null ? slot.registeredCount : 0);
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${slot.subject || "-"}</td>
+                <td>${slot.examDate || slot.date || "-"}</td>
+                <td>${slot.session || "-"}</td>
+                <td>${booked}</td>
+                <td>${slot.status || "可报名"}</td>
+            `;
+            tr.addEventListener("click", () => {
+                selectedSlotId = slot.id || null;
+                renderSlotDetail(slot);
+                renderAssignView(slot);
+                switchSubjectTab("detail");
+            });
+            tbody.appendChild(tr);
+        });
+
+        renderSlotStats();
+    }
+
+    function renderSlotDetail(slot) {
+        if (!slot) {
+            $("#slotDetailSubject").textContent = "-";
+            $("#slotDetailDate").textContent = "-";
+            $("#slotDetailSession").textContent = "-";
+            $("#slotDetailCount").textContent = "-";
+        } else {
+            const booked = (slot.bookedCount != null) ? slot.bookedCount :
+                (slot.registeredCount != null ? slot.registeredCount : 0);
+            $("#slotDetailSubject").textContent = slot.subject || "-";
+            $("#slotDetailDate").textContent = slot.examDate || slot.date || "-";
+            $("#slotDetailSession").textContent = slot.session || "-";
+            $("#slotDetailCount").textContent = booked;
+        }
+    }
+
+    function renderAssignView(slot) {
+        const title = $("#assignSlotTitle");
+        const countEl = $("#assignStudentCount");
+        const tbody = $("#assignStudentTableBody");
+
+        if (!slot || !slot.id) {
+            title.textContent = "未选择";
+            countEl.textContent = "0";
+            tbody.innerHTML = "";
+            return;
+        }
+
+        const list = assignStudentsForSlot[slot.id] || [];
+        title.textContent = `${slot.subject || ""} · ${slot.examDate || slot.date || ""} · ${slot.session || ""}`;
+        countEl.textContent = list.length.toString();
+        tbody.innerHTML = "";
+
+        list.forEach(stuId => {
+            const stu = students.find(s => s.id === stuId);
+            if (!stu) return;
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${stu.name || ""}</td>
+                <td>${stu.classType || ""}</td>
+                <td>${stu.phone || ""}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderSlotStats() {
+        const totalSlots = slots.length;
+        let totalCount = 0;
+        const statBySubject = {};
+
+        slots.forEach(slot => {
+            const c = (slot.bookedCount != null) ? slot.bookedCount :
+                (slot.registeredCount != null ? slot.registeredCount : 0);
+            totalCount += c;
+            const key = slot.subject || "未填写";
+            if (!statBySubject[key]) {
+                statBySubject[key] = {slots: 0, count: 0};
+            }
+            statBySubject[key].slots++;
+            statBySubject[key].count += c;
+        });
+
+        $("#statTotalSlots").textContent = totalSlots.toString();
+        $("#statTotalCount").textContent = totalCount.toString();
+
+        const tbody = $("#statBySubjectBody");
+        tbody.innerHTML = "";
+        Object.keys(statBySubject).forEach(subj => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${subj}</td>
+                <td>${statBySubject[subj].slots}</td>
+                <td>${statBySubject[subj].count}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function switchSubjectTab(tab) {
+        document.querySelectorAll("#subjectTabs .btn").forEach(btn => {
+            if (btn.dataset.subjectTab === tab) {
+                btn.classList.add("btn-primary");
+                btn.classList.remove("btn-outline");
+            } else {
+                btn.classList.remove("btn-primary");
+                btn.classList.add("btn-outline");
+            }
+        });
+        document.querySelectorAll(".subject-view").forEach(view => {
+            view.style.display = "none";
+        });
+        const view = document.getElementById("subjectView-" + tab);
+        if (view) view.style.display = "block";
+    }
+
+    document.querySelectorAll("#subjectTabs .btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const tab = btn.dataset.subjectTab;
+            switchSubjectTab(tab);
+        });
+    });
+
+    // 默认显示场次列表
+    switchSubjectTab("list");
+
+    // 新增考试场次弹窗逻辑
+    const examSlotModal = $("#examSlotModal");
+    const modalSlotSubject = $("#modalSlotSubject");
+    const modalSlotDate = $("#modalSlotDate");
+    const modalSlotSession = $("#modalSlotSession");
+    const modalSlotCapacity = $("#modalSlotCapacity");
+    const examSlotModalConfirm = $("#examSlotModalConfirm");
+
+    document.querySelectorAll("[data-close='examSlotModal']").forEach(btn => {
+        btn.addEventListener("click", () => {
+            examSlotModal.classList.remove("visible");
+        });
+    });
+
+    $("#btnAddSlot").addEventListener("click", () => {
+        const today = new Date().toISOString().slice(0, 10);
+        modalSlotSubject.value = "科目一";
+        modalSlotDate.value = today;
+        modalSlotSession.value = "上午场";
+        modalSlotCapacity.value = "30";
+
+        examSlotModal.classList.add("visible");
+        modalSlotSubject.focus();
+    });
+
+    examSlotModalConfirm.addEventListener("click", () => {
+        const subject = modalSlotSubject.value.trim() || "科目一";
+        const examDate = modalSlotDate.value.trim() || new Date().toISOString().slice(0, 10);
+        const session = modalSlotSession.value.trim() || "上午场";
+        const capacity = parseInt(modalSlotCapacity.value.trim() || "0", 10);
+
+        const payload = {
+            subject: subject,
+            examDate: examDate,
+            session: session,
+            capacity: capacity,
+            bookedCount: 0,
+            status: "可报名"
+        };
+
+        fetch('/api/exam-slots', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json;charset=UTF-8'},
+            body: JSON.stringify(payload)
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("新增考试场次失败");
+                return res.json();
+            })
+            .then(newSlot => {
+                slots.push(newSlot);
+                renderSlotsTable();
+                showToast("已新增考试场次");
+                examSlotModal.classList.remove("visible");
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("新增考试场次失败，请检查后端 /api/exam-slots");
+            });
+    });
+
+    // 为考试场次安排学员弹窗逻辑
+    const assignModal = $("#assignModal");
+    const assignStudentSelect = $("#assignStudentSelect");
+    const assignModalConfirm = $("#assignModalConfirm");
+
+    document.querySelectorAll("[data-close='assignModal']").forEach(btn => {
+        btn.addEventListener("click", () => {
+            assignModal.classList.remove("visible");
+        });
+    });
+
+    $("#btnOpenAssignModal").addEventListener("click", () => {
+        if (!selectedSlotId) {
+            showToast("请先在场次列表中点击选择一个考试场次");
+            return;
+        }
+        const slot = slots.find(s => s.id === selectedSlotId);
+        if (!slot) {
+            showToast("当前场次不存在");
+            return;
+        }
+
+        // 下拉框填充未被安排的学员
+        assignStudentSelect.innerHTML = "";
+        const already = assignStudentsForSlot[selectedSlotId] || [];
+
+        students.forEach(s => {
+            if (!already.includes(s.id)) {
+                const opt = document.createElement("option");
+                opt.value = s.id;
+                opt.textContent = `${s.name || ""} / ${s.classType || ""} / ${s.phone || ""}`;
+                assignStudentSelect.appendChild(opt);
+            }
+        });
+
+        if (assignStudentSelect.options.length === 0) {
+            showToast("没有可安排的学员（都已安排过）");
+            return;
+        }
+
+        assignModal.classList.add("visible");
+    });
+
+    assignModalConfirm.addEventListener("click", () => {
+        if (!selectedSlotId) {
+            showToast("请先选择考试场次");
+            return;
+        }
+        const value = assignStudentSelect.value;
+        if (!value) {
+            showToast("请选择学员");
+            return;
+        }
+        const stuId = parseInt(value, 10);
+        const stu = students.find(s => s.id === stuId);
+        if (!stu) {
+            showToast("学员不存在");
+            return;
+        }
+
+        if (!assignStudentsForSlot[selectedSlotId]) {
+            assignStudentsForSlot[selectedSlotId] = [];
+        }
+        if (!assignStudentsForSlot[selectedSlotId].includes(stuId)) {
+            assignStudentsForSlot[selectedSlotId].push(stuId);
+        }
+
+        // 更新本地报名人数
+        const slot = slots.find(s => s.id === selectedSlotId);
+        if (slot) {
+            if (slot.bookedCount == null && slot.registeredCount != null) {
+                slot.bookedCount = slot.registeredCount;
+            }
+            if (slot.bookedCount == null) slot.bookedCount = 0;
+            slot.bookedCount += 1;
+        }
+
+        renderAssignView(slot);
+        renderSlotsTable();  // 同时刷新列表和统计
+        assignModal.classList.remove("visible");
+        showToast("已安排学员到该考试场次（前端示意）");
+    });
+
+    // 统一渲染
+    function renderAllTables() {
+        renderStudentsTableInfo($("#searchInputInfo").value || "");
+        renderStudentsTableProgress($("#searchInputProgress").value || "");
+        renderStudentsTableExam($("#searchInputExam").value || "");
+        renderSlotsTable();
+    }
+
+    // 从后端加载学生列表
+    function loadInitialData() {
+        fetch('/api/students')
+            .then(res => {
+                if (!res.ok) throw new Error("加载学生失败");
+                return res.json();
+            })
+            .then(data => {
+                students = data || [];
+                selectedId = students.length > 0 ? students[0].id : null;
+                renderAllTables();
+                if (selectedId) {
+                    renderInfoDetail(selectedId);
+                    renderProgressDetail(selectedId);
+                    renderExamForStudent(getById(selectedId));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("加载学生数据失败，请检查 /api/students");
+            });
+    }
+
+    // 从后端加载考试场次
+    function loadSlots() {
+        fetch('/api/exam-slots')
+            .then(res => {
+                if (!res.ok) throw new Error("加载考试场次失败");
+                return res.json();
+            })
+            .then(data => {
+                slots = data || [];
+                renderSlotsTable();
+            })
+            .catch(err => {
+                console.error(err);
+                showToast("加载考试场次失败，请检查 /api/exam-slots");
+            });
+    }
+
+    // 登录转场动画
+    (function () {
+        const flag = sessionStorage.getItem("ds-transition-target");
+        if (flag === "students") {
+            sessionStorage.removeItem("ds-transition-target");
+            const editBtn = document.getElementById("btnEditInfo");
+            if (editBtn) {
+                setTimeout(() => shrinkToElement(editBtn), 120);
+            }
+        }
+    })();
+
+    // 退出登录
+    function bindLogout(btnId) {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+            window.location.href = "/logout";
+        });
+    }
+
+    bindLogout("btnLogout");
+    bindLogout("btnLogout2");
+    bindLogout("btnLogout3");
+    bindLogout("btnLogout4");
+
+    // 页面加载时，从后端拉数据
+    loadInitialData();
+    loadSlots();
+</script>
+</body>
+</html>
